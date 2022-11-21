@@ -15,8 +15,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.polymorphic
 
 
-class MetaMapSerializer (val json: Json) : KSerializer<Map<String, Any>> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("MetaMap") {
+class AnyMapSerializer (val json: Json) : KSerializer<Map<String, Any>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("AnyMap") {
     }
     val listSerializer  = ListSerializer(PairSerializer(JsonElement.serializer(), JsonElement.serializer()))
     override fun deserialize( decoder: Decoder ): Map<String, Any> =
@@ -125,7 +125,7 @@ fun main() {
         .plus("string value" to "2B||!2B")
         .plus("pair int-int" to (1 to 5))
         .plus("pair string-int" to ("assaf" to 5))
-    val mmSerializer = MetaMapSerializer(formatPolymorphic)
+    val mmSerializer = AnyMapSerializer(formatPolymorphic)
     val jsonned = mmSerializer.json.encodeToString(mmSerializer, mapStringAny)
     val mmDecoded = mmSerializer.json.decodeFromString(mmSerializer, jsonned)
     require(mapStringAny == mmDecoded)
